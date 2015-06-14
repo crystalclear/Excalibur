@@ -627,20 +627,23 @@ module ex {
      * Get the center point of an actor
      */
     public getCenter(): Vector {
-       return new Vector(this.x + this.getWidth() / 2 - this.anchor.x * this.getWidth(), 
+       return new Vector(this.x + this.width() / 2 - this.anchor.x * this.width(), 
                          this.y + this.getHeight() / 2 - this.anchor.y * this.getHeight());
     }
     /**
      * Gets the calculated width of an actor, factoring in scale
      */
-    public getWidth() {
-       return this._width * this.scale.x;
-    }
+    public width(): number;
     /**
      * Sets the width of an actor, factoring in the current scale
      */
-    public setWidth(width) {
-       this._width = width / this.scale.x;
+    public width(width: number): number;
+
+    public width(width?: number): number {
+       if (width != null) {
+          this._width = (width / this.scale.x);
+       }
+       return this._width * this.scale.x;
     }
     /**
      * Gets the calculated height of an actor, factoring in scale
@@ -672,7 +675,7 @@ module ex {
      * Gets the right edge of the actor
      */
     public getRight() {
-       return this.x + this.getWidth();
+       return this.x + this.width();
     }
     /**
      * Gets the top edge of the actor
@@ -722,7 +725,7 @@ module ex {
        var anchor = this._getCalculatedAnchor();
        return new BoundingBox(this.getWorldX() - anchor.x,
           this.getWorldY() - anchor.y,
-          this.getWorldX() + this.getWidth() - anchor.x,
+          this.getWorldX() + this.width() - anchor.x,
           this.getWorldY() + this.getHeight() - anchor.y);
     }
     /**
@@ -1038,7 +1041,7 @@ module ex {
        return complete;
     }
     private _getCalculatedAnchor(): Point {
-       return new ex.Point(this.getWidth() * this.anchor.x, this.getHeight() * this.anchor.y);
+       return new ex.Point(this.width() * this.anchor.x, this.getHeight() * this.anchor.y);
     }
     /**
      * Called by the Engine, updates the state of the actor
@@ -1086,7 +1089,7 @@ module ex {
           var yDiff = 0;
           
           if (this.centerDrawingX) {
-             xDiff = (this.currentDrawing.width * this.currentDrawing.scale.x - this.getWidth()) / 2 -
+             xDiff = (this.currentDrawing.width * this.currentDrawing.scale.x - this.width()) / 2 -
              this.currentDrawing.width * this.currentDrawing.scale.x * this.currentDrawing.anchor.x;
           }
           if (this.centerDrawingY) {

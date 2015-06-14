@@ -10,7 +10,7 @@ module ex.Traits {
          var eventDispatcher = actor.eventDispatcher;
          var anchor = actor.anchor;
          var globalScale = actor.getGlobalScale();
-         var width = globalScale.x * actor.getWidth() / actor.scale.x;
+         var width = globalScale.x * actor.width() / actor.scale.x;
          var height = globalScale.y * actor.getHeight() / actor.scale.y;
          var actorScreenCoords = engine.worldToScreenCoordinates(new Point(actor.getWorldX() - anchor.x * width, 
                                                                            actor.getWorldY() - anchor.y * height));
