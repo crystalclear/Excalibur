@@ -628,7 +628,7 @@ module ex {
      */
     public getCenter(): Vector {
        return new Vector(this.x + this.width() / 2 - this.anchor.x * this.width(), 
-                         this.y + this.getHeight() / 2 - this.anchor.y * this.getHeight());
+                         this.y + this.height() / 2 - this.anchor.y * this.height());
     }
     /**
      * Gets the calculated width of an actor, factoring in scale
@@ -648,15 +648,19 @@ module ex {
     /**
      * Gets the calculated height of an actor, factoring in scale
      */
-    public getHeight() {
-       return this._height * this.scale.y;
-    }
+    public height(): number;
     /**
      * Sets the height of an actor, factoring in the current scale
      */
-    public setHeight(height) {
-       this._height = height / this.scale.y;
+    public height(height): number;
+
+    public height(height?: number): number {
+       if (height != null) {
+          this._height = (height / this.scale.y);
+      }
+       return this._height * this.scale.y;
     }
+
     /**
      * Centers the actor's drawing around the center of the actor's bounding box
      * @param center Indicates to center the drawing around the actor
@@ -687,7 +691,7 @@ module ex {
      * Gets the bottom edge of the actor
      */
     public getBottom() {
-       return this.y + this.getHeight();
+       return this.y + this.height();
     }
     /**
      * Gets the x value of the Actor in global coordinates
@@ -726,7 +730,7 @@ module ex {
        return new BoundingBox(this.getWorldX() - anchor.x,
           this.getWorldY() - anchor.y,
           this.getWorldX() + this.width() - anchor.x,
-          this.getWorldY() + this.getHeight() - anchor.y);
+          this.getWorldY() + this.height() - anchor.y);
     }
     /**
      * Tests whether the x/y specified are contained in the actor
@@ -1041,7 +1045,7 @@ module ex {
        return complete;
     }
     private _getCalculatedAnchor(): Point {
-       return new ex.Point(this.width() * this.anchor.x, this.getHeight() * this.anchor.y);
+       return new ex.Point(this.width() * this.anchor.x, this.height() * this.anchor.y);
     }
     /**
      * Called by the Engine, updates the state of the actor
@@ -1093,7 +1097,7 @@ module ex {
              this.currentDrawing.width * this.currentDrawing.scale.x * this.currentDrawing.anchor.x;
           }
           if (this.centerDrawingY) {
-             yDiff = (this.currentDrawing.height * this.currentDrawing.scale.y - this.getHeight()) / 2 -
+             yDiff = (this.currentDrawing.height * this.currentDrawing.scale.y - this.height()) / 2 -
              this.currentDrawing.height * this.currentDrawing.scale.y * this.currentDrawing.anchor.y;
           }
           this.currentDrawing.draw(ctx, -anchorPoint.x - xDiff, -anchorPoint.y - yDiff);

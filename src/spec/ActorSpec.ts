@@ -98,31 +98,31 @@ describe("A game actor", () => {
 
 	it('can have its height and width scaled', ()=>{
 		expect(actor.width()).toBe(0);
-		expect(actor.getHeight()).toBe(0);
+          expect(actor.height()).toBe(0);
 
 		actor.width(20);
-		actor.setHeight(20);
+          actor.height(20);
 
 		expect(actor.width()).toBe(20);
-		expect(actor.getHeight()).toBe(20);
+          expect(actor.height()).toBe(20);
 
 		actor.scale.x = 2;
-      actor.scale.y = 3;
+          actor.scale.y = 3;
 
 		expect(actor.width()).toBe(40);
-		expect(actor.getHeight()).toBe(60);
+          expect(actor.height()).toBe(60);
 
 		actor.scale.x = .5;
-      actor.scale.y = .1;
+          actor.scale.y = .1;
 
 		expect(actor.width()).toBe(10);
-		expect(actor.getHeight()).toBe(2);
+          expect(actor.height()).toBe(2);
 
 
 	});
 
 	it('can have a center point', () => {
-		actor.setHeight(100);
+          actor.height(100);
       actor.width(50);
 
 		var center = actor.getCenter();
@@ -156,7 +156,7 @@ describe("A game actor", () => {
 
 	it('has a left, right, top, and bottom', ()=>{
       actor.width(100);
-		actor.setHeight(100);
+          actor.height(100);
 
 		expect(actor.getLeft()).toBe(0);
 		expect(actor.getRight()).toBe(100);
@@ -169,7 +169,7 @@ describe("A game actor", () => {
 		expect(actor.x).toBe(0);
 		expect(actor.y).toBe(0);
       actor.width(20);
-      actor.setHeight(20);
+        actor.height(20);
 
       expect(actor.anchor.x).toBe(.5);
       expect(actor.anchor.y).toBe(.5);
@@ -758,7 +758,7 @@ describe("A game actor", () => {
       actor.x = 0;
       actor.y = 0;
       actor.width(10);
-      actor.setHeight(10);
+      actor.height(10);
 
       scene.add(actor);
       scene.update(engine, 100);
@@ -780,7 +780,7 @@ describe("A game actor", () => {
       actor.x = 1010;
       actor.y = 1010;
       actor.width(5);
-      actor.setHeight(5);
+      actor.height(5);
 
       scene.add(actor);
       scene.update(engine, 100);

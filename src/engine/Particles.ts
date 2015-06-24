@@ -349,7 +349,7 @@ module ex {
 
          if (this.emitterType === EmitterType.Rectangle) {
             ranX = Util.randomInRange(this.x, this.x + this.width());
-            ranY = Util.randomInRange(this.y, this.y + this.getHeight());
+            ranY = Util.randomInRange(this.y, this.y + this.height());
          } else if (this.emitterType === EmitterType.Circle) {
             var radius = Util.randomInRange(0, this.radius);
             ranX = radius * Math.cos(angle) + this.x;

@@ -193,12 +193,12 @@ module ex {
     public collides(actor: Actor): Vector {
        var points: Point[] = [];
        var width = actor.x + actor.width();
-       var height = actor.y + actor.getHeight();
+       var height = actor.y + actor.height();
        var actorBounds = actor.getBounds();
        var overlaps: Vector[] = [];
        // trace points for overlap
        for (var x = actorBounds.left; x <= width; x += Math.min(actor.width() / 2, this.cellWidth / 2)) {
-          for (var y = actorBounds.top; y <= height; y += Math.min(actor.getHeight() / 2, this.cellHeight / 2)) {
+          for (var y = actorBounds.top; y <= height; y += Math.min(actor.height() / 2, this.cellHeight / 2)) {
              var cell = this.getCellByPoint(x, y);
              if (cell && cell.solid) {
                  var overlap = actorBounds.collides(cell.getBounds());

@@ -303,7 +303,7 @@ module ex {
       
       public getFocus() {
          if (this._follow) {
-            return new Point(this._follow.x + this._follow.width() / 2, this._follow.y + this._follow.getHeight() / 2);
+            return new Point(this._follow.x + this._follow.width() / 2, this._follow.y + this._follow.height() / 2);
          } else {
             return this._focus;
          }
