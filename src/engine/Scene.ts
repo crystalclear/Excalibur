@@ -162,7 +162,7 @@ module ex {
        */
       public isInitialized: boolean = false;
 
-      private _sortedDrawingTree: SortedList<Actor> = new SortedList<Actor>(Actor.prototype.getZIndex);
+      private _sortedDrawingTree: SortedList<Actor> = new SortedList<Actor>(Actor.prototype.zIndex);
 
       private _collisionResolver: ICollisionResolver = new DynamicTreeCollisionResolver();
 
