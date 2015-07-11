@@ -97,7 +97,7 @@ class CircleActor extends ex.Actor {
       ctx.translate(this.x, this.y);
 
       ctx.beginPath();
-      ctx.arc(0, 0, this.getWidth(), 0, 2 * Math.PI, true);
+      ctx.arc(0, 0, this.width(), 0, 2 * Math.PI, true);
       ctx.fillStyle = this.color.toString();
       ctx.fill();
       ctx.closePath();
