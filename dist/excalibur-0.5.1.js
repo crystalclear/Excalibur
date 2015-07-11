@@ -1,6 +1,6 @@
-/*! excalibur - v0.5.0 - 2015-06-11
+/*! excalibur - v0.5.1 - 2015-06-26
 * https://github.com/excaliburjs/Excalibur
-* Copyright (c) 2015 ; Licensed BSD*/
+* Copyright (c) 2015 ; Licensed BSD-2-Clause*/
 if (typeof window === 'undefined') {
     window = { audioContext: function () {
         return;
@@ -1208,6 +1208,8 @@ var ex;
             this.height = 0;
             this.effects = [];
             this.internalImage = new Image();
+            this.naturalWidth = 0;
+            this.naturalHeight = 0;
             this._spriteCanvas = null;
             this._spriteCtx = null;
             this._pixelData = null;
@@ -1231,6 +1233,8 @@ var ex;
             });
             this.width = swidth;
             this.height = sheight;
+            this.naturalWidth = swidth;
+            this.naturalHeight = sheight;
         }
         Sprite.prototype._loadPixels = function () {
             if (this._texture.isLoaded() && !this._pixelsLoaded) {
@@ -1414,6 +1418,9 @@ var ex;
                 ctx.drawImage(this.internalImage, 0, 0, this.swidth, this.sheight, -xpoint, -ypoint, this.swidth * this.scale.x, this.sheight * this.scale.y);
             }
             ctx.restore();
+            // calculating current dimensions
+            this.width = this.naturalWidth * this.scale.x;
+            this.height = this.naturalHeight * this.scale.y;
         };
         /**
          * Produces a copy of the current sprite
@@ -3107,6 +3114,31 @@ var ex;
                         this.left.dy = -Math.abs(this.left.dy);
                     }
                 }
+                else {
+                    // Cancel velocities along intersection
+                    if (this.intersect.x !== 0) {
+                        if (this.left.dx <= 0 && this.right.dx <= 0) {
+                            this.left.dx = Math.max(this.left.dx, this.right.dx);
+                        }
+                        else if (this.left.dx >= 0 && this.right.dx >= 0) {
+                            this.left.dx = Math.min(this.left.dx, this.right.dx);
+                        }
+                        else {
+                            this.left.dx = 0;
+                        }
+                    }
+                    if (this.intersect.y !== 0) {
+                        if (this.left.dy <= 0 && this.right.dy <= 0) {
+                            this.left.dy = Math.max(this.left.dy, this.right.dy);
+                        }
+                        else if (this.left.dy >= 0 && this.right.dy >= 0) {
+                            this.left.dy = Math.min(this.left.dy, this.right.dy);
+                        }
+                        else {
+                            this.left.dy = 0;
+                        }
+                    }
+                }
             }
             var rightSide = ex.Util.getOppositeSide(this.side);
             var rightIntersect = this.intersect.scale(-1.0);
@@ -3126,6 +3158,31 @@ var ex;
                     }
                     else if (rightSide === 2 /* Bottom */) {
                         this.right.dy = -Math.abs(this.right.dy);
+                    }
+                }
+                else {
+                    // Cancel velocities along intersection
+                    if (rightIntersect.x !== 0) {
+                        if (this.right.dx <= 0 && this.left.dx <= 0) {
+                            this.right.dx = Math.max(this.left.dx, this.right.dx);
+                        }
+                        else if (this.left.dx >= 0 && this.right.dx >= 0) {
+                            this.right.dx = Math.min(this.left.dx, this.right.dx);
+                        }
+                        else {
+                            this.right.dx = 0;
+                        }
+                    }
+                    if (rightIntersect.y !== 0) {
+                        if (this.right.dy <= 0 && this.left.dy <= 0) {
+                            this.right.dy = Math.max(this.left.dy, this.right.dy);
+                        }
+                        else if (this.left.dy >= 0 && this.right.dy >= 0) {
+                            this.right.dy = Math.min(this.left.dy, this.right.dy);
+                        }
+                        else {
+                            this.right.dy = 0;
+                        }
                     }
                 }
             }
@@ -3436,9 +3493,39 @@ var ex;
     })(BaseCamera);
     ex.LockedCamera = LockedCamera;
 })(ex || (ex = {}));
+var ex;
+(function (ex) {
+    /**
+     * An enum that describes the strategies that rotation actions can use
+     */
+    (function (RotationType) {
+        /**
+         * Rotation via `ShortestPath` will use the smallest angle
+         * between the starting and ending points. This strategy is the default behavior.
+         */
+        RotationType[RotationType["ShortestPath"] = 0] = "ShortestPath";
+        /**
+         * Rotation via `LongestPath` will use the largest angle
+         * between the starting and ending points.
+         */
+        RotationType[RotationType["LongestPath"] = 1] = "LongestPath";
+        /**
+         * Rotation via `Clockwise` will travel in a clockwise direction,
+         * regardless of the starting and ending points.
+         */
+        RotationType[RotationType["Clockwise"] = 2] = "Clockwise";
+        /**
+         * Rotation via `CounterClockwise` will travel in a counterclockwise direction,
+         * regardless of the starting and ending points.
+         */
+        RotationType[RotationType["CounterClockwise"] = 3] = "CounterClockwise";
+    })(ex.RotationType || (ex.RotationType = {}));
+    var RotationType = ex.RotationType;
+})(ex || (ex = {}));
 /// <reference path="../Algebra.ts" />
 /// <reference path="../Engine.ts" />
 /// <reference path="../Actor.ts" />
+/// <reference path="RotationType.ts" />
 /**
  * See [[ActionContext|Action API]] for more information about Actions.
  */
@@ -3801,8 +3888,8 @@ var ex;
                     if (!this._started) {
                         this._started = true;
                         this._start = this._actor.rotation;
-                        var distance1 = this._end - this._start;
-                        var distance2 = ex.Util.TwoPI - Math.abs(distance1);
+                        var distance1 = Math.abs(this._end - this._start);
+                        var distance2 = ex.Util.TwoPI - distance1;
                         if (distance1 > distance2) {
                             this._shortDistance = distance2;
                             this._longDistance = distance1;
@@ -4257,32 +4344,6 @@ var ex;
                 return ActionQueue;
             })();
             Actions.ActionQueue = ActionQueue;
-            /**
-             * An enum that describes the strategies that rotation actions can use
-             */
-            (function (RotationType) {
-                /**
-                 * Rotation via `ShortestPath` will use the smallest angle
-                 * between the starting and ending points. This strategy is the default behavior.
-                 */
-                RotationType[RotationType["ShortestPath"] = 0] = "ShortestPath";
-                /**
-                 * Rotation via `LongestPath` will use the largest angle
-                 * between the starting and ending points.
-                 */
-                RotationType[RotationType["LongestPath"] = 1] = "LongestPath";
-                /**
-                 * Rotation via `Clockwise` will travel in a clockwise direction,
-                 * regardless of the starting and ending points.
-                 */
-                RotationType[RotationType["Clockwise"] = 2] = "Clockwise";
-                /**
-                 * Rotation via `CounterClockwise` will travel in a counterclockwise direction,
-                 * regardless of the starting and ending points.
-                 */
-                RotationType[RotationType["CounterClockwise"] = 3] = "CounterClockwise";
-            })(Actions.RotationType || (Actions.RotationType = {}));
-            var RotationType = Actions.RotationType;
         })(Actions = Internal.Actions || (Internal.Actions = {}));
     })(Internal = ex.Internal || (ex.Internal = {}));
 })(ex || (ex = {}));
@@ -5248,6 +5309,7 @@ var ex;
             for (i = 0, len = this._killQueue.length; i < len; i++) {
                 actorIndex = this.children.indexOf(this._killQueue[i]);
                 if (actorIndex > -1) {
+                    this._sortedDrawingTree.removeByComparable(this._killQueue[i]);
                     this.children.splice(actorIndex, 1);
                 }
             }
@@ -5812,12 +5874,6 @@ var ex;
      *
      * **Setting opacity when using a color doesn't do anything**
      * [Issue #364](https://github.com/excaliburjs/Excalibur/issues/364)
-     *
-     * **Spawning an Actor next to another sometimes causes unexpected placement**
-     * [Issue #319](https://github.com/excaliburjs/Excalibur/issues/319)
-     *
-     * **[[Actor.contains]] doesn't work with child actors and relative coordinates**
-     * [Issue #147](https://github.com/excaliburjs/Excalibur/issues/147)
      */
     var Actor = (function (_super) {
         __extends(Actor, _super);
@@ -6043,9 +6099,14 @@ var ex;
         Actor.prototype.setDrawing = function (key) {
             key = key.toString();
             if (this.currentDrawing !== this.frames[key]) {
-                this.frames[key].reset();
+                if (this.frames[key] != null) {
+                    this.frames[key].reset();
+                    this.currentDrawing = this.frames[key];
+                }
+                else {
+                    ex.Logger.getInstance().error('the specified drawing key \'' + key + '\' does not exist');
+                }
             }
-            this.currentDrawing = this.frames[key];
         };
         Actor.prototype.addDrawing = function (args) {
             if (arguments.length === 2) {
@@ -6376,8 +6437,8 @@ var ex;
          * @param angleRadians  The angle to rotate to in radians
          * @param duration          The time it should take the actor to complete the rotation in milliseconds
          */
-        Actor.prototype.rotateBy = function (angleRadians, duration) {
-            this.actionQueue.add(new ex.Internal.Actions.RotateBy(this, angleRadians, duration));
+        Actor.prototype.rotateBy = function (angleRadians, duration, rotationType) {
+            this.actionQueue.add(new ex.Internal.Actions.RotateBy(this, angleRadians, duration, rotationType));
             return this;
         };
         /**
@@ -9107,8 +9168,8 @@ var ex;
                 _this.image = new Image();
                 _this.image.addEventListener('load', function () {
                     _this._isLoaded = true;
-                    _this.width = _this._sprite.swidth = _this._sprite.width = _this.image.naturalWidth;
-                    _this.height = _this._sprite.sheight = _this._sprite.height = _this.image.naturalHeight;
+                    _this.width = _this._sprite.swidth = _this._sprite.naturalWidth = _this._sprite.width = _this.image.naturalWidth;
+                    _this.height = _this._sprite.sheight = _this._sprite.naturalHeight = _this._sprite.height = _this.image.naturalHeight;
                     _this.loaded.resolve(_this.image);
                     complete.resolve(_this.image);
                 });
@@ -11906,7 +11967,7 @@ var ex;
         return AnimationNode;
     })();
 })(ex || (ex = {}));
-//# sourceMappingURL=excalibur-0.5.0.js.map
+//# sourceMappingURL=excalibur-0.5.1.js.map
 ;
 // Concatenated onto excalibur after build
 // Exports the excalibur module so it can be used with browserify
