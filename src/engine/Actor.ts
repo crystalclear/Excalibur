@@ -2,7 +2,7 @@
 /// <reference path="Traits/Movement.ts" />
 /// <reference path="Traits/OffscreenCulling.ts" />
 /// <reference path="Traits/CapturePointer.ts" />
-/// <reference path="Traits/CollisionDetection.ts" />
+/// <reference path="Traits/TileMapCollisionDetection.ts" />
 /// <reference path="Collision/Side.ts" />
 /// <reference path="Algebra.ts" />
 /// <reference path="Util/Util.ts" />
@@ -427,7 +427,7 @@ module ex {
        }         
        // Build default pipeline
        this.traits.push(new ex.Traits.Movement());
-       this.traits.push(new ex.Traits.CollisionDetection());
+       this.traits.push(new ex.Traits.TileMapCollisionDetection());
        this.traits.push(new ex.Traits.OffscreenCulling());         
        this.traits.push(new ex.Traits.CapturePointer());
        this.actionQueue = new ex.Internal.Actions.ActionQueue(this);
@@ -1066,7 +1066,7 @@ module ex {
        if (this.color) {
           this.color.a = this.opacity;
        }       
-       // Update actor pipeline (movement, collision detection, event propagation, offscreen culling)
+       // Update actor pipeline (movement, tilemap collision detection, event propagation, offscreen culling)
        for (var i = 0; i < this.traits.length; i++) {
           this.traits[i].update(this, engine, delta);
        }

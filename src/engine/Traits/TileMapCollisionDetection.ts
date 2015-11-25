@@ -1,7 +1,7 @@
 /// <reference path="../Interfaces/IActorTrait.ts" />
 
 module ex.Traits {
-   export class CollisionDetection implements IActorTrait { 
+   export class TileMapCollisionDetection implements IActorTrait { 
       public update(actor: Actor, engine: Engine, delta: number) {
          var eventDispatcher = actor.eventDispatcher;
          if (actor.collisionType !== CollisionType.PreventCollision && engine.currentScene && engine.currentScene.tileMaps) {            

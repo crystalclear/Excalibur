@@ -1,6 +1,10 @@
 /// <reference path="BoundingBox.ts"/>
 
 module ex {
+
+   /**
+    * TreeNode for internal Dynamic AABB Tree data structure
+    */
    export class TreeNode {
       public left: TreeNode;
       public right: TreeNode;
@@ -16,11 +20,17 @@ module ex {
          this.height = 0;
       }
 
+      /**
+       * Returns if this node is a leaf
+       */
       public isLeaf(): boolean {
          return (!this.left && !this.right);
       }
    }
 
+   /**
+    * Dynamic tree data structure for doing quick scene collision queries
+    */
    export class DynamicTree {
 
       public root: TreeNode;
@@ -30,6 +40,9 @@ module ex {
          this.nodes = {};
       }
 
+      /**
+       * Puts a new node into the tree and finds the best place in the tree for it
+       */
       public insert(leaf: TreeNode): void {
 
          // If there are no nodes in the tree, make this the root leaf
@@ -140,6 +153,9 @@ module ex {
          }
       }
 
+      /**
+       * Removes a node from the tree
+       */
       public remove(leaf: TreeNode) {
          if (leaf === this.root) {
             this.root = null;
@@ -179,6 +195,9 @@ module ex {
 
       }
 
+      /**
+       * Helper that wraps an actor in a TreeNode and inserts it into the tree
+       */
       public registerActor(actor: Actor) {
          var node = new TreeNode();
          node.actor = actor;
@@ -191,6 +210,9 @@ module ex {
          this.insert(node);
       }
 
+      /**
+       * Helper that recalculates the trees nodes based on actors
+       */ 
       public updateActor(actor: Actor) {
          var node = this.nodes[actor.id];
          if (!node) { return; }
@@ -225,6 +247,9 @@ module ex {
          return true;
       }
 
+      /**
+       * Helper that removes the actor's corresponding node from the current tree
+       */
       public removeActor(actor: Actor) {
          var node = this.nodes[actor.id];
          if (!node) { return; }
@@ -233,6 +258,9 @@ module ex {
          delete this.nodes[actor.id];
       }
 
+      /**
+       * Rebalances the intrenal red-black AABB tree from the current node
+       */
       public balance(node: TreeNode) {
          if (node === null) {
             throw new Error('Cannot balance at null node');
@@ -350,6 +378,9 @@ module ex {
          return node;
       }
 
+      /**
+       * Returns the height of the tree
+       */
       public getHeight(): number {
          if (this.root === null) {
             return 0;
@@ -357,6 +388,10 @@ module ex {
          return this.root.height;
       }
 
+      /**
+       * Query the tree for potential colliders for the current actor, and calls the callback for the current potential.
+       * If the callback returns true, the query stops traversing the tree
+       */
       public query(actor: Actor, callback: (other: Actor) => boolean): void {
          var bounds = actor.getBounds();
          var helper = currentNode => {
@@ -380,7 +415,9 @@ module ex {
          return null;
       }
 
-      
+      /**
+       * Return all the tree nodes in the tree
+       */
       public getNodes(): TreeNode[] {
          var helper = currentNode => {
             if (currentNode) {
