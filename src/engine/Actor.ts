@@ -716,11 +716,11 @@ module ex {
      */
      public getGlobalScale() {
        if (!this.parent) {
-          return new Point(this.scale.x, this.scale.y);
+          return new Vector(this.scale.x, this.scale.y);
        }
 
        var parentScale = this.parent.getGlobalScale();
-       return new Point(this.scale.x * parentScale.x, this.scale.y * parentScale.y);
+       return new Vector(this.scale.x * parentScale.x, this.scale.y * parentScale.y);
      }
     /**
      * Returns the actor's [[BoundingBox]] calculated for this instant.
@@ -739,7 +739,7 @@ module ex {
      * @param recurse checks whether the x/y are contained in any child actors (if they exist).
      */
     public contains(x: number, y: number, recurse: boolean = false): boolean {
-       var containment = this.getBounds().contains(new Point(x, y));
+       var containment = this.getBounds().contains(new Vector(x, y));
        
        if (recurse) {
           

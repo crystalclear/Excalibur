@@ -58,14 +58,14 @@ module ex {
     */
    export class BaseCamera {
       protected _follow: Actor;
-      protected _focus: Point = new Point(0, 0);
+      protected _focus: Vector = new Vector(0, 0);
       protected _lerp: boolean = false;
       private _cameraMoving: boolean = false;
       private _currentLerpTime: number = 0;
       private _lerpDuration: number = 1 * 1000; // 5 seconds
       private _totalLerpTime: number = 0;
-      private _lerpStart: Point = null;
-      private _lerpEnd: Point = null;
+      private _lerpStart: Vector = null;
+      private _lerpEnd: Vector = null;
 
       //camera effects
       protected _isShaking: boolean = false;
@@ -120,7 +120,7 @@ module ex {
 
          if (this._lerp) {
             this._lerpStart = this._focus.clone();
-            this._lerpEnd = new Point(x, y);
+            this._lerpEnd = new Vector(x, y);
             this._currentLerpTime = 0;
             this._cameraMoving = true;
          }
@@ -295,7 +295,7 @@ module ex {
 
       public getFocus() {
          if (this._follow) {
-            return new Point(this._follow.x + this._follow.getWidth() / 2, this._focus.y);
+            return new Vector(this._follow.x + this._follow.getWidth() / 2, this._focus.y);
          } else {
             return this._focus;
          }
@@ -313,7 +313,7 @@ module ex {
 
       public getFocus() {
          if (this._follow) {
-            return new Point(this._follow.x + this._follow.getWidth() / 2, this._follow.y + this._follow.getHeight() / 2);
+            return new Vector(this._follow.x + this._follow.getWidth() / 2, this._follow.y + this._follow.getHeight() / 2);
          } else {
             return this._focus;
          }

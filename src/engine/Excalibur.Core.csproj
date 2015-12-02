@@ -64,6 +64,9 @@
     <TypeScriptCompile Include="Actions\IActionable.ts" />
     <TypeScriptCompile Include="Actor.ts" />
     <TypeScriptCompile Include="Algebra.ts" />
+    <TypeScriptCompile Include="Collision\AxisAlignedBoundingBox.ts" />
+    <TypeScriptCompile Include="Collision\BoundingCircle.ts" />
+    <TypeScriptCompile Include="Collision\IShape.ts" />
     <TypeScriptCompile Include="Drawing\Animation.ts" />
     <TypeScriptCompile Include="Binding.ts" />
     <TypeScriptCompile Include="Util\CullingBox.ts" />

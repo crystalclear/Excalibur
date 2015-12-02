@@ -21,8 +21,8 @@ module ex.Internal.Actions {
    export class EaseTo implements IAction {
       private _currentLerpTime: number = 0;
       private _lerpDuration: number = 1 * 1000; // 5 seconds
-      private _lerpStart: Point = new ex.Point(0, 0);
-      private _lerpEnd: Point = new ex.Point(0, 0);
+      private _lerpStart: Vector = new ex.Vector(0, 0);
+      private _lerpEnd: Vector = new ex.Vector(0, 0);
       private _initialized: boolean = false;
       private _stopped: boolean = false;
       private _distance: number = 0;
@@ -32,12 +32,12 @@ module ex.Internal.Actions {
                   duration: number, 
                   public easingFcn: (currentTime: number, startValue: number, endValue: number, duration: number) => number) {
          this._lerpDuration = duration;
-         this._lerpEnd = new ex.Point(x, y);
+         this._lerpEnd = new ex.Vector(x, y);
       }
       private _initialize() {
-         this._lerpStart = new ex.Point(this.actor.x, this.actor.y);
+         this._lerpStart = new ex.Vector(this.actor.x, this.actor.y);
          this._currentLerpTime = 0;
-         this._distance = this._lerpStart.toVector().distance(this._lerpEnd.toVector());
+         this._distance = this._lerpStart.distance(this._lerpEnd);
       }
 
       public update(delta: number): void {
@@ -82,7 +82,7 @@ module ex.Internal.Actions {
 
       }
       public isComplete(actor: Actor): boolean {
-         return this._stopped || (new Vector(actor.x, actor.y)).distance(this._lerpStart.toVector()) >= this._distance;
+         return this._stopped || (new Vector(actor.x, actor.y)).distance(this._lerpStart) >= this._distance;
       }
 
       public reset(): void {
