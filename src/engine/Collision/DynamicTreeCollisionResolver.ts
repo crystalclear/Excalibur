@@ -30,7 +30,7 @@ module ex {
          });
 
          var actor: Actor;
-         var collisionPairs = [];
+         var collisionPairs: CollisionPair[] = [];
 
          for (var j = 0, l = potentialColliders.length; j < l; j++) {
 
