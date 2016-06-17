@@ -295,6 +295,22 @@ module ex {
     public id: number = Actor.maxId++;
     
     public body: Body = new Body();
+    
+    public get x(): number {
+        return this.body.pos.x;
+    }
+    
+    public set x(theX: number) {
+        this.body.pos.x = theX;
+    }
+    
+    public get y(): number {
+        return this.body.pos.x;
+    }
+    
+    public set y(theY: number) {
+        this.body.pos.y = theY;
+    }
 
     public get pos(): Vector {
        return this.body.pos;
